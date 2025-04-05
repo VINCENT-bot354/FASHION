@@ -644,3 +644,78 @@ footer {
     padding: 0.75rem;
   }
 }
+
+/* Font Size Settings */
+.font-size-small {
+  font-size: 0.85rem;
+}
+
+.font-size-medium {
+  font-size: 1rem;
+}
+
+.font-size-large {
+  font-size: 1.15rem;
+}
+
+/* Adjust specific elements based on font size */
+.font-size-large .navbar-brand {
+  font-size: 1.3rem;
+}
+
+.font-size-small .navbar-brand {
+  font-size: 1.1rem;
+}
+
+.font-size-large h1 {
+  font-size: 2.6rem;
+}
+
+.font-size-small h1 {
+  font-size: 2.2rem;
+}
+
+.font-size-large h2 {
+  font-size: 2.2rem;
+}
+
+.font-size-small h2 {
+  font-size: 1.8rem;
+}
+
+.font-size-large .product-title {
+  font-size: 1.3rem;
+}
+
+.font-size-small .product-title {
+  font-size: 1.1rem;
+}
+
+.font-size-large .product-price {
+  font-size: 1.2rem;
+}
+
+.font-size-small .product-price {
+  font-size: 1rem;
+}
+
+/* Settings Icon Styling */
+#settingsDropdown {
+  color: var(--light-color);
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+#settingsDropdown:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--secondary-color);
+}
+
+.dropdown-menu-end {
+  right: 0;
+  left: auto;
+}

@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Apply saved font size setting on page load
+    applyFontSizeSetting();
+    
+    // Initialize font size buttons
+    initFontSizeButtons();
+    
     // Initialize the search functionality
     const searchForm = document.getElementById('searchForm');
     if (searchForm) {
@@ -89,3 +95,61 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     });
 });
+
+// Font size settings functionality
+function initFontSizeButtons() {
+    const fontSizeButtons = document.querySelectorAll('.font-size-btn');
+    
+    // Add click event listeners to font size buttons
+    fontSizeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const size = this.getAttribute('data-size');
+            
+            // Save the chosen font size in localStorage
+            localStorage.setItem('preferredFontSize', size);
+            
+            // Apply the new font size
+            applyFontSize(size);
+            
+            // Update button active state
+            updateFontSizeButtonStates(size);
+        });
+    });
+    
+    // Set initial active state based on saved preference or default
+    const currentSize = localStorage.getItem('preferredFontSize') || 'medium';
+    updateFontSizeButtonStates(currentSize);
+}
+
+function updateFontSizeButtonStates(activeSize) {
+    const fontSizeButtons = document.querySelectorAll('.font-size-btn');
+    
+    fontSizeButtons.forEach(button => {
+        const buttonSize = button.getAttribute('data-size');
+        
+        // Remove active class from all buttons
+        button.classList.remove('btn-primary');
+        button.classList.add('btn-outline-secondary');
+        
+        // Add active class to the selected button
+        if (buttonSize === activeSize) {
+            button.classList.remove('btn-outline-secondary');
+            button.classList.add('btn-primary');
+        }
+    });
+}
+
+function applyFontSizeSetting() {
+    const savedSize = localStorage.getItem('preferredFontSize');
+    if (savedSize) {
+        applyFontSize(savedSize);
+    }
+}
+
+function applyFontSize(size) {
+    // Remove any existing font size classes
+    document.body.classList.remove('font-size-small', 'font-size-medium', 'font-size-large');
+    
+    // Add the selected font size class
+    document.body.classList.add(`font-size-${size}`);
+}
