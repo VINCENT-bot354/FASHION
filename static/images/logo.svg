@@ -1,18 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="60" viewBox="0 0 200 60">
-  <!-- Main background shape -->
-  <rect x="10" y="10" width="180" height="40" rx="20" fill="#553965" />
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .text { font-family: 'Playfair Display', serif; fill: #ffffff; }
+    .perfume-bottle { fill: #ffffff; }
+    .dress { fill: #ffffff; }
+  </style>
   
-  <!-- Decorative elements for clothing -->
-  <path d="M40,20 C40,20 50,15 60,20 C70,25 70,35 60,40 C50,45 40,40 40,20 Z" fill="#E8C5B0" />
-  <path d="M60,20 L60,40" stroke="#A5678E" stroke-width="2" stroke-linecap="round" />
+  <!-- Background Circle -->
+  <circle cx="50" cy="50" r="48" fill="#8b5d33" />
+  <circle cx="50" cy="50" r="45" fill="#a06d3e" />
   
-  <!-- Perfume bottle silhouette -->
-  <rect x="75" y="17" width="10" height="5" rx="1" fill="#E8C5B0" />
-  <path d="M77,22 L77,35 C77,36.657 78.343,38 80,38 C81.657,38 83,36.657 83,35 L83,22 Z" fill="#E8C5B0" />
+  <!-- Elegant Letter C -->
+  <text x="34" y="65" font-size="50" class="text" font-weight="bold">C</text>
   
-  <!-- Text "CHARA" -->
-  <text x="95" y="30" font-family="Playfair Display, serif" font-size="16" font-weight="bold" fill="#E8C5B0">CHARA</text>
+  <!-- Stylized Dress -->
+  <path class="dress" d="M65 35 C70 40, 72 60, 72 70 L58 70 C58 60, 60 40, 65 35 Z" />
+  <path class="dress" d="M65 55 C60 55, 55 55, 50 60 C45 55, 40 55, 35 55 L35 70 L65 70 Z" />
   
-  <!-- Smaller text "WARDROBES & PERFUMES" -->
-  <text x="95" y="40" font-family="Montserrat, sans-serif" font-size="6" fill="#E8C5B0">WARDROBES & PERFUMES</text>
+  <!-- Perfume Bottle -->
+  <rect class="perfume-bottle" x="78" y="40" width="8" height="5" rx="1" />
+  <rect class="perfume-bottle" x="80" y="45" width="4" height="2" />
+  <rect class="perfume-bottle" x="75" y="47" width="14" height="18" rx="2" />
+  
+  <!-- Signature Line -->
+  <path stroke="#ffffff" stroke-width="1" fill="none" d="M30 80 C40 78, 60 78, 70 80" />
 </svg>
