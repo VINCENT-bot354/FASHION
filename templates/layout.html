@@ -21,7 +21,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
-                <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="CHARA Logo" width="40" height="40">
+                <img id="brand-logo" src="{{ url_for('static', filename='images/logo.svg') }}" alt="CHARA Logo" width="40" height="40">
                 <span class="ms-2">CHARA WARDROBES<br>AND PERFUMES</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,6 +57,18 @@
                                 <button class="btn btn-sm btn-outline-secondary font-size-btn" data-size="small">Small</button>
                                 <button class="btn btn-sm btn-outline-secondary font-size-btn" data-size="medium">Medium</button>
                                 <button class="btn btn-sm btn-outline-secondary font-size-btn" data-size="large">Large</button>
+                                                        </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li class="px-3 py-2 text-center">
+                                <strong>Logo Style</strong>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li class="px-3 py-2">
+                                <div class="logo-selection-container d-flex justify-content-between align-items-center">
+                                    <button class="btn btn-sm btn-outline-secondary logo-selection-btn" data-logo="">Default</button>
+                                    <button class="btn btn-sm btn-outline-secondary logo-selection-btn" data-logo="2">Elegant</button>
+                                    <button class="btn btn-sm btn-outline-secondary logo-selection-btn" data-logo="3">Modern</button>
+                                </div>
                             </li>
                         </ul>
                     </li>

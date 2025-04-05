@@ -719,3 +719,32 @@ footer {
   right: 0;
   left: auto;
 }
+
+/* Logo Selection Styling */
+.logo-selection-container {
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.logo-selection-btn {
+  flex: 1;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.logo-selection-btn:hover {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+/* Logo preview in dropdown */
+.logo-preview {
+  width: 25px;
+  height: 25px;
+  margin-right: 5px;
+}

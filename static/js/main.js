@@ -2,8 +2,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Apply saved font size setting on page load
     applyFontSizeSetting();
     
+    // Apply saved logo preference on page load
+    applyLogoPreference();
+    
     // Initialize font size buttons
     initFontSizeButtons();
+    
+    // Initialize logo selection buttons
+    initLogoSelectionButtons();
     
     // Initialize the search functionality
     const searchForm = document.getElementById('searchForm');
@@ -152,4 +158,68 @@ function applyFontSize(size) {
     
     // Add the selected font size class
     document.body.classList.add(`font-size-${size}`);
+}
+
+// Logo preference functionality
+function initLogoSelectionButtons() {
+    const logoButtons = document.querySelectorAll('.logo-selection-btn');
+    
+    // Add click event listeners to logo selection buttons
+    logoButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const logoNumber = this.getAttribute('data-logo');
+            
+            // Save the chosen logo in localStorage
+            localStorage.setItem('preferredLogo', logoNumber);
+            
+            // Apply the new logo
+            applyLogo(logoNumber);
+            
+            // Update button active state
+            updateLogoButtonStates(logoNumber);
+        });
+    });
+    
+    // Set initial active state based on saved preference or default
+    const currentLogo = localStorage.getItem('preferredLogo') || '';
+    updateLogoButtonStates(currentLogo);
+}
+
+function updateLogoButtonStates(activeLogo) {
+    const logoButtons = document.querySelectorAll('.logo-selection-btn');
+    
+    logoButtons.forEach(button => {
+        const buttonLogo = button.getAttribute('data-logo');
+        
+        // Remove active class from all buttons
+        button.classList.remove('btn-primary');
+        button.classList.add('btn-outline-secondary');
+        
+        // Add active class to the selected button
+        if (buttonLogo === activeLogo) {
+            button.classList.remove('btn-outline-secondary');
+            button.classList.add('btn-primary');
+        }
+    });
+}
+
+function applyLogoPreference() {
+    const savedLogo = localStorage.getItem('preferredLogo');
+    if (savedLogo) {
+        applyLogo(savedLogo);
+    }
+}
+
+function applyLogo(logoNumber) {
+    const logoImg = document.getElementById('brand-logo');
+    if (logoImg) {
+        // Default logo has no number suffix
+        let logoSrc = '/static/images/logo.svg';
+        
+        if (logoNumber && logoNumber !== '') {
+            logoSrc = `/static/images/logo${logoNumber}.svg`;
+        }
+        
+        logoImg.src = logoSrc;
+    }
 }
