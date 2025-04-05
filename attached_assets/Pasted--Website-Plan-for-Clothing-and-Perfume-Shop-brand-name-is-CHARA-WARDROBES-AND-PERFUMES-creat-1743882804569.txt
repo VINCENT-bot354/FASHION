@@ -1,0 +1,158 @@
+‎
+‎
+‎Website Plan for Clothing and Perfume Shop.
+‎brand name is CHARA WARDROBES AND PERFUMES.
+‎create a logo that fits the description and name of the brand
+‎
+‎Purpose
+‎
+‎A simple and manageable website to sell clothes and perfumes. The owner will update product details manually using a single file (not editing code). Product images will display automatically when uploaded, based on the product name.
+‎
+‎1. Pages to Include
+‎
+‎Homepage
+‎
+‎Welcome message or business intro
+‎
+‎Featured or recent products (about 3–6 displayed)
+‎
+‎Simple navigation to other pages (Product, About, Contact, Learn)
+‎
+‎Product Page
+‎
+‎Grid layout showing all products
+‎
+‎For each product:
+‎
+‎Product name (always predetermined)
+‎
+‎Product type (e.g., dress, perfume)
+‎
+‎Product color
+‎
+‎Product size (use S, M, L, XL for clothes, and ml for perfumes)
+‎
+‎Product price (in KES)
+‎
+‎Product image linked to a file like mara.jpg (must match the product name)
+‎
+‎If image is missing, show a blank placeholder or “Coming Soon”
+‎
+‎Order button for every product that:
+‎
+‎Opens WhatsApp chat with number 0702533122
+‎
+‎Includes pre-written message:
+‎“Hello, I would like to order or discuss [product name].”
+‎(The product name changes dynamically)
+‎
+‎About Page
+‎
+‎Short background about the shop or owner
+‎
+‎Vision or message (optional)
+‎
+‎Contact Page
+‎
+‎WhatsApp contact
+‎
+‎Optional: email, social media, or business location
+‎
+‎Learn Page
+‎
+‎Guides or advice about:
+‎
+‎Choosing the right size
+‎
+‎Perfume tips
+‎
+‎How to care for clothes
+‎
+‎Simple Q&A or FAQ section (optional)
+‎
+‎2. Product Data Management
+‎
+‎How Products Are Stored
+‎
+‎All product information will be saved in a separate, editable file, for example: products.json
+‎
+‎Each product will have the following:
+‎
+‎name (always filled in, e.g., "mara")
+‎
+‎type (blank at first, later filled, e.g., "dress")
+‎
+‎color (e.g., "red", "blue")
+‎
+‎size (e.g., "M", "100ml")
+‎
+‎price (e.g., "1200 KES")
+‎
+‎image path (e.g., "images/mara.jpg")
+‎
+‎You (the owner) will:
+‎
+‎Add a product by entering its name in the file
+‎
+‎Fill in type, color, size, price later—even before image is ready
+‎
+‎Upload the image with a name that exactly matches the product name (e.g., mara.jpg) into the /images/ folder
+‎
+‎Image Handling
+‎
+‎Product images are matched by name: productname.jpg
+‎
+‎If an image file for a product is not found, a placeholder image should show instead
+‎
+‎Once the correct image is uploaded into the image folder, it will show up on the site automatically
+‎
+‎3. Order Button Logic
+‎
+‎Every product must have an order button
+‎
+‎When clicked, it should:
+‎
+‎Open WhatsApp
+‎
+‎Start a chat with number: 0702533122
+‎
+‎Have a message filled in like:
+‎"Hello, I would like to order or discuss Mara."
+‎(Replace “Mara” with that specific product name)
+‎
+‎4. Updating and Managing the Website (Owner Instructions)
+‎
+‎To add a new product:
+‎
+‎Go to the products.json file (or the file used to store products)
+‎
+‎Add a new entry with the product name only, leave the rest blank if needed
+‎
+‎Later, edit the entry and fill in type, size, color, and price
+‎
+‎Upload the image named exactly as the product name (e.g., mara.jpg) into the images/ folder
+‎
+‎After updating the file or uploading an image, changes should appear on the live site
+‎
+‎You do not need to edit any HTML or website code—only update the file and upload images
+‎
+‎5. Technical Suggestions
+‎
+‎Keep the website simple and clean
+‎
+‎Use HTML, CSS, and JavaScript or a light frontend framework
+‎
+‎Load product data from a separate file (like products.json)
+‎
+‎Show placeholder image when product image is missing
+‎
+‎Use WhatsApp Web URL format for messaging with product names
+‎
+‎  leave the product descriptions eg type color size all should be blank except name
+‎the following names should the pre-written in the first 100 products
+‎
+Mara, Willow, Sahara, Venus, Amethysta, Tanganyika, Luma, Topaz, Mombasa, Alpsa, Magnolia, Eartha, Emberlyn, Tana, Skyra, Onyx, Rwenzori, Camellia, Gobi, Maple, Loire, Storme, Indigo, Zambezi, Everest, Ebony, Bora, Neptune, Oaklyn, Rainah, Acacia, Flamea, Quartzia, Thames, Kilima, Dahlia, Poppy, Sequoia, Marigold, Saturn, Aurora, Ruby, Coralyn, Atacama, Glacia, Sandara, Pacifica, Naivasha, Solana, Lavender, Sapphira, Amazonia, Violetta, Kenya, Savanna, Jasmine, Zodiac, Maldives, Nigera, Elgon, Birch, Opalyn, Andes, Juniper, Celestia, Diamonda, Riftia, Zanzibar, Amazon, Kalahari, Rosea, Luna, Mississippi, Zephyra, Sinai, Lilac, Jupiter, Indus, Serengenti, Victoria, Emerald, Lamu, Mars, Redwoods, Canyon, Volga, Pluto, Urania, Iris, Peony.
+
+‎
+‎
+‎
