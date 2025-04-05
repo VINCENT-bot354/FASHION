@@ -1,11 +1,11 @@
 [
     {
         "name": "Mara",
-        "type": "",
-        "color": "",
-        "size": "",
-        "price": "",
-        "featured": false
+        "type": "shoe",
+        "color": "white",
+        "size": "40",
+        "price": "1000",
+        "featured": true
     },
     {
         "name": "Willow",

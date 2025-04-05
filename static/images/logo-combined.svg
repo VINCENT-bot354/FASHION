@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#553965" />
+      <stop offset="100%" stop-color="#A5678E" />
+    </linearGradient>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E8C5B0" />
+      <stop offset="100%" stop-color="#D4A06C" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="50" cy="50" r="48" fill="url(#bgGradient)" />
+  <circle cx="50" cy="50" r="48" fill="none" stroke="url(#goldGradient)" stroke-width="2" />
+  
+  <!-- Wardrobe -->
+  <rect x="25" y="28" width="30" height="45" rx="2" fill="#ffffff" opacity="0.9" />
+  <rect x="25" y="28" width="30" height="45" rx="2" fill="none" stroke="#E8C5B0" stroke-width="1" />
+  
+  <!-- Wardrobe doors -->
+  <line x1="40" y1="28" x2="40" y2="73" stroke="#E8C5B0" stroke-width="1.5" />
+  <circle cx="32" cy="50" r="1.5" fill="#E8C5B0" />
+  <circle cx="48" cy="50" r="1.5" fill="#E8C5B0" />
+  
+  <!-- Clothing items silhouettes -->
+  <path d="M30,35 C30,38 32,40 35,40 C38,40 40,38 40,35" fill="none" stroke="#E8C5B0" stroke-width="0.8" />
+  <path d="M30,45 L35,45 L35,50 L30,50 Z" fill="#E8C5B0" opacity="0.6" />
+  <path d="M32,55 L38,55 L38,62 L32,62 Z" fill="#E8C5B0" opacity="0.6" />
+  
+  <!-- Perfume Bottle -->
+  <rect x="60" y="35" width="16" height="4" rx="1" fill="#ffffff" />
+  <rect x="64" y="39" width="8" height="2" fill="#ffffff" />
+  <rect x="58" y="41" width="20" height="30" rx="3" fill="#ffffff" />
+  
+  <!-- Perfume spray effect -->
+  <path d="M68,30 Q73,24 78,26" stroke="#E8C5B0" stroke-width="0.8" fill="none" opacity="0.8" />
+  <path d="M68,28 Q74,20 80,22" stroke="#E8C5B0" stroke-width="0.6" fill="none" opacity="0.6" />
+  <path d="M68,26 Q75,16 82,18" stroke="#E8C5B0" stroke-width="0.4" fill="none" opacity="0.4" />
+  
+  <!-- Perfume bottle details -->
+  <rect x="61" y="50" width="14" height="1" fill="#E8C5B0" opacity="0.7" />
+  <rect x="61" y="55" width="14" height="1" fill="#E8C5B0" opacity="0.7" />
+  <rect x="61" y="60" width="14" height="1" fill="#E8C5B0" opacity="0.7" />
+  
+  <!-- C for CHARA monogram -->
+  <path d="M50,15 Q30,20 30,50 Q30,80 50,85" fill="none" stroke="#ffffff" stroke-width="4" stroke-opacity="0.4" />
+  
+  <!-- Gold accent line -->
+  <path d="M30,80 Q50,77 70,80" stroke="url(#goldGradient)" stroke-width="2" fill="none" />
+</svg>

@@ -138,8 +138,27 @@ def products():
     """Products page with all products"""
     all_products = get_products()
     search_query = request.args.get('search', '').lower()
+    category = request.args.get('category', 'all').lower()
     
-    # Filter products if search query exists
+    # First filter by category if specified
+    if category != 'all':
+        category_mapping = {
+            'clothes': ['dress', 'shirt', 'pants', 'top', 'skirt', 'suit', 'jacket', 'trouser', 'sweatshirt', 'sweater', 'blouse', 'hoodie', 'coat'],
+            'shoes': ['shoe', 'boot', 'sandal', 'heel', 'sneaker', 'loafer', 'flat', 'slipper', 'oxford', 'derby'],
+            'perfumes': ['perfume', 'fragrance', 'cologne', 'scent', 'eau de toilette', 'eau de parfum', 'spray'],
+        }
+        
+        category_keywords = category_mapping.get(category, [])
+        category_products = []
+        
+        for product in all_products:
+            product_type = product.get('type', '').lower()
+            if any(keyword in product_type for keyword in category_keywords):
+                category_products.append(product)
+        
+        all_products = category_products
+    
+    # Then filter by search if provided
     if search_query:
         filtered_products = []
         for product in all_products:
@@ -156,7 +175,7 @@ def products():
     for product in filtered_products:
         product['image_path'] = get_product_image_path(product['name'])
     
-    return render_template('products.html', products=filtered_products, search_query=search_query)
+    return render_template('products.html', products=filtered_products, search_query=search_query, selected_category=category)
 
 @app.route('/about')
 def about():
