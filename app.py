@@ -14,10 +14,29 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 
-# Add a context processor to make the current year available to all templates
+# Function to get image path for products
+def check_image_exists(product_name):
+    """Check if an image exists for the product"""
+    for ext in ALLOWED_EXTENSIONS:
+        image_path = f"{UPLOAD_FOLDER}{product_name.lower()}.{ext}"
+        if os.path.exists(image_path):
+            return f"/static/images/products/{product_name.lower()}.{ext}"
+    return None
+
+def get_product_image_path(product_name):
+    """Get image path for a product or return placeholder"""
+    image_path = check_image_exists(product_name)
+    if image_path:
+        return image_path
+    return "/static/images/placeholder.svg"
+
+# Add a context processor to make the current year and helper functions available to all templates
 @app.context_processor
-def inject_current_year():
-    return {'current_year': datetime.now().year}
+def inject_context():
+    return {
+        'current_year': datetime.now().year,
+        'get_product_image_path': get_product_image_path
+    }
 
 # Constants
 PRODUCTS_FILE = 'products.json'
@@ -94,20 +113,6 @@ def save_products(products):
         logger.error(f"Error saving products: {e}")
         return False
 
-def check_image_exists(product_name):
-    """Check if an image exists for the product"""
-    for ext in ALLOWED_EXTENSIONS:
-        image_path = f"{UPLOAD_FOLDER}{product_name.lower()}.{ext}"
-        if os.path.exists(image_path):
-            return f"/static/images/products/{product_name.lower()}.{ext}"
-    return None
-
-def get_product_image_path(product_name):
-    """Get image path for a product or return placeholder"""
-    image_path = check_image_exists(product_name)
-    if image_path:
-        return image_path
-    return "/static/images/placeholder.svg"
 
 @app.route('/')
 def index():
