@@ -1,0 +1,63 @@
+{% extends 'layout.html' %}
+
+{% block title %}CHARA WARDROBES AND PERFUMES - About Us{% endblock %}
+
+{% block content %}
+<section class="container mt-5">
+    <h1 class="section-title">About CHARA</h1>
+    
+    <div class="about-section">
+        <h2 class="mb-4">Our Story</h2>
+        <p>
+            CHARA WARDROBES AND PERFUMES was born from a passion for elegance and self-expression. Our journey began with a simple idea: to create a boutique where quality clothing and exquisite fragrances come together to help people express their unique personalities.
+        </p>
+        
+        <p>
+            The name "CHARA" draws inspiration from the Greek word for joy and delight, reflecting our mission to bring happiness to our customers through beautiful clothing and captivating scents.
+        </p>
+        
+        <h2 class="mt-5 mb-4">Our Philosophy</h2>
+        <div class="row mb-5">
+            <div class="col-md-4 text-center mb-4 mb-md-0">
+                <div class="bg-light p-4 rounded h-100">
+                    <i class="fas fa-gem fa-3x mb-3" style="color: var(--primary-color);"></i>
+                    <h3 class="h5">Quality</h3>
+                    <p>We believe in offering products that stand the test of time, both in durability and style.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center mb-4 mb-md-0">
+                <div class="bg-light p-4 rounded h-100">
+                    <i class="fas fa-user-plus fa-3x mb-3" style="color: var(--primary-color);"></i>
+                    <h3 class="h5">Personality</h3>
+                    <p>Each piece in our collection is chosen to help you express your unique personal style.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="bg-light p-4 rounded h-100">
+                    <i class="fas fa-hand-holding-heart fa-3x mb-3" style="color: var(--primary-color);"></i>
+                    <h3 class="h5">Service</h3>
+                    <p>We're committed to providing personalized attention to help you find exactly what you need.</p>
+                </div>
+            </div>
+        </div>
+        
+        <h2 class="mt-5 mb-4">Our Collections</h2>
+        <p>
+            Our clothing selection ranges from casual everyday wear to elegant pieces for special occasions. We carefully select items that combine comfort, style, and quality craftsmanship.
+        </p>
+        
+        <p>
+            Our perfume collection features a diverse range of scents, from subtle and fresh to bold and sophisticated. We believe that fragrance is a powerful form of self-expression, and we're passionate about helping you find your signature scent.
+        </p>
+        
+        <h2 class="mt-5 mb-4">Our Vision</h2>
+        <p>
+            We envision CHARA WARDROBES AND PERFUMES as more than just a shop—we want to create a community where people can discover, learn, and celebrate their personal style. Our goal is to continue growing our collections while maintaining our commitment to quality and individuality.
+        </p>
+        
+        <div class="text-center mt-5">
+            <a href="{{ url_for('products') }}" class="btn btn-lg btn-order">Explore Our Collections</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

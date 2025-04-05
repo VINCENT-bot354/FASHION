@@ -1,0 +1,167 @@
+{% extends 'layout.html' %}
+
+{% block title %}CHARA WARDROBES AND PERFUMES - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="text-white mb-0">Admin Panel</h1>
+            <a href="{{ url_for('admin_logout') }}" class="btn btn-outline-light">Logout</a>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="admin-container">
+        <div class="admin-actions mb-4">
+            <div>
+                <h2>Product Management</h2>
+                <p>Add, edit, or delete products from your catalog.</p>
+            </div>
+            
+            <div>
+                <button type="button" class="btn admin-btn" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                    <i class="fas fa-plus me-2"></i> Add New Product
+                </button>
+            </div>
+        </div>
+        
+        <!-- Add Product Modal -->
+        <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ url_for('add_product') }}" method="POST">
+                        <div class="modal-body">
+                            <div class="admin-form-group">
+                                <label for="productName" class="admin-form-label">Product Name*</label>
+                                <input type="text" class="admin-form-control" id="productName" name="name" required>
+                                <small class="text-muted">This will be used to match with product images.</small>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn admin-btn">Add Product</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Product List -->
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Type</th>
+                        <th>Color</th>
+                        <th>Size</th>
+                        <th>Price</th>
+                        <th>Featured</th>
+                        <th>Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr id="product-row-{{ loop.index }}">
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.type }}</td>
+                        <td>{{ product.color }}</td>
+                        <td>{{ product.size }}</td>
+                        <td>{{ product.price }}</td>
+                        <td>{% if product.featured %}Yes{% else %}No{% endif %}</td>
+                        <td>
+                            {% set image_path = get_product_image_path(product.name) %}
+                            {% if image_path != url_for('static', filename='images/placeholder.svg') %}
+                            <span class="badge bg-success">Uploaded</span>
+                            {% else %}
+                            <span class="badge bg-warning text-dark">Missing</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm admin-btn edit-product-btn" data-product-id="{{ loop.index }}">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <a href="{{ url_for('delete_product', product_name=product.name) }}" class="btn btn-sm admin-btn-danger" onclick="return confirm('Are you sure you want to delete {{ product.name }}?')">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                    <tr id="product-form-{{ loop.index }}" class="d-none">
+                        <td colspan="8">
+                            <form class="row g-3" action="{{ url_for('update_product') }}" method="POST">
+                                <input type="hidden" name="name" value="{{ product.name }}">
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Product Name</label>
+                                    <input type="text" class="form-control" value="{{ product.name }}" disabled>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Type</label>
+                                    <input type="text" class="form-control" name="type" value="{{ product.type }}">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Color</label>
+                                    <input type="text" class="form-control" name="color" value="{{ product.color }}">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Size</label>
+                                    <input type="text" class="form-control" name="size" value="{{ product.size }}">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Price (KES)</label>
+                                    <input type="text" class="form-control" name="price" value="{{ product.price }}">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-check mt-4">
+                                        <input class="form-check-input" type="checkbox" name="featured" id="featured-{{ loop.index }}" {% if product.featured %}checked{% endif %}>
+                                        <label class="form-check-label" for="featured-{{ loop.index }}">
+                                            Featured on Homepage
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12 mt-3">
+                                    <button type="submit" class="btn admin-btn me-2">Save Changes</button>
+                                    <button type="button" class="btn btn-secondary cancel-edit-btn" data-product-id="{{ loop.index }}">Cancel</button>
+                                </div>
+                            </form>
+                            
+                            <div class="mt-4">
+                                <h5>Upload Product Image</h5>
+                                <form action="{{ url_for('upload_image', product_name=product.name) }}" method="POST" enctype="multipart/form-data" class="mt-2">
+                                    <div class="row g-3 align-items-end">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Image File (jpg, jpeg, png, gif)</label>
+                                            <input type="file" class="form-control product-image-input" name="image" accept=".jpg,.jpeg,.png,.gif" data-preview="image-preview-{{ loop.index }}">
+                                            <small class="text-muted">Image will be automatically named "{{ product.name | lower }}.jpg" (or other extension)</small>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <img id="image-preview-{{ loop.index }}" src="#" alt="Preview" style="display: none; max-height: 100px; max-width: 100%;">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button type="submit" class="btn admin-btn w-100">Upload Image</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

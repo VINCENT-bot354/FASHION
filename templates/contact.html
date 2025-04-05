@@ -1,0 +1,78 @@
+{% extends 'layout.html' %}
+
+{% block title %}CHARA WARDROBES AND PERFUMES - Contact Us{% endblock %}
+
+{% block content %}
+<section class="container mt-5">
+    <h1 class="section-title">Contact Us</h1>
+    
+    <div class="contact-section">
+        <div class="row">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <h2 class="mb-4">Get In Touch</h2>
+                <p class="mb-4">We'd love to hear from you! Whether you have questions about our products, need styling advice, or want to check product availability, our team is ready to help.</p>
+                
+                <div class="contact-info">
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h3 class="h5">WhatsApp</h3>
+                            <p class="mb-0">Our preferred method of contact</p>
+                            <a href="https://wa.me/254702533122" target="_blank">+254 702 533 122</a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="far fa-envelope"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h3 class="h5">Email</h3>
+                            <p class="mb-0">Send us your inquiries anytime</p>
+                            <a href="mailto:info@charawardrobes.com">info@charawardrobes.com</a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h3 class="h5">Instagram</h3>
+                            <p class="mb-0">Follow us for latest updates and styling ideas</p>
+                            <a href="https://instagram.com/charawardrobes" target="_blank">@charawardrobes</a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h3 class="h5">Response Time</h3>
+                            <p class="mb-0">We typically respond within 2-3 hours during business hours (9 AM - 6 PM, Monday to Saturday).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="bg-light p-4 rounded text-center h-100 d-flex flex-column justify-content-center">
+                    <i class="fas fa-shopping-bag fa-4x mb-4" style="color: var(--primary-color);"></i>
+                    <h3 class="mb-3">How to Order</h3>
+                    <p>Ordering from CHARA is easy:</p>
+                    <ol class="text-start">
+                        <li>Browse our products and find items you love</li>
+                        <li>Click the "Order via WhatsApp" button on any product</li>
+                        <li>Send us the message (it's pre-filled with product details)</li>
+                        <li>We'll respond to confirm availability, delivery options, and payment details</li>
+                    </ol>
+                    <a href="{{ url_for('products') }}" class="btn btn-order mt-3">Browse Products Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

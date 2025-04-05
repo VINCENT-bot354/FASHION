@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="60" viewBox="0 0 200 60">
+  <!-- Main background shape -->
+  <rect x="10" y="10" width="180" height="40" rx="20" fill="#553965" />
+  
+  <!-- Decorative elements for clothing -->
+  <path d="M40,20 C40,20 50,15 60,20 C70,25 70,35 60,40 C50,45 40,40 40,20 Z" fill="#E8C5B0" />
+  <path d="M60,20 L60,40" stroke="#A5678E" stroke-width="2" stroke-linecap="round" />
+  
+  <!-- Perfume bottle silhouette -->
+  <rect x="75" y="17" width="10" height="5" rx="1" fill="#E8C5B0" />
+  <path d="M77,22 L77,35 C77,36.657 78.343,38 80,38 C81.657,38 83,36.657 83,35 L83,22 Z" fill="#E8C5B0" />
+  
+  <!-- Text "CHARA" -->
+  <text x="95" y="30" font-family="Playfair Display, serif" font-size="16" font-weight="bold" fill="#E8C5B0">CHARA</text>
+  
+  <!-- Smaller text "WARDROBES & PERFUMES" -->
+  <text x="95" y="40" font-family="Montserrat, sans-serif" font-size="6" fill="#E8C5B0">WARDROBES & PERFUMES</text>
+</svg>

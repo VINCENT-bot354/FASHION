@@ -1,0 +1,124 @@
+{% extends 'layout.html' %}
+
+{% block title %}CHARA WARDROBES AND PERFUMES - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1>Elegance Defined</h1>
+        <p>Discover our curated collection of premium clothing and exclusive perfumes. Elevate your style with CHARA WARDROBES AND PERFUMES.</p>
+        <a href="{{ url_for('products') }}" class="btn btn-lg btn-outline-light">Shop Now</a>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="container">
+    <h2 class="section-title">Featured Collections</h2>
+    
+    {% if featured_products %}
+    <div class="row">
+        {% for product in featured_products %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="product-card">
+                <div class="product-img-container">
+                    <img src="{{ product.image_path }}" alt="{{ product.name }}" class="product-img">
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">{{ product.name }}</h3>
+                    {% if product.type %}
+                    <div class="product-type">{{ product.type }}</div>
+                    {% endif %}
+                    <div class="product-meta">
+                        {% if product.color %}
+                        <span class="product-color me-3"><i class="fas fa-palette me-1"></i> {{ product.color }}</span>
+                        {% endif %}
+                        {% if product.size %}
+                        <span class="product-size"><i class="fas fa-ruler me-1"></i> {{ product.size }}</span>
+                        {% endif %}
+                    </div>
+                    {% if product.price %}
+                    <div class="product-price">{{ product.price }} KES</div>
+                    {% endif %}
+                    <a href="https://wa.me/254702533122?text=Hello%2C%20I%20would%20like%20to%20order%20or%20discuss%20{{ product.name }}" 
+                       class="btn btn-order w-100" 
+                       target="_blank"
+                       data-product-name="{{ product.name }}">
+                        <i class="fab fa-whatsapp"></i> Order via WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+        <a href="{{ url_for('products') }}" class="btn btn-lg btn-order">View All Products</a>
+    </div>
+    {% else %}
+    <div class="empty-product-msg">
+        <p>No featured products available at the moment. Please check back later!</p>
+        <a href="{{ url_for('products') }}" class="btn btn-order mt-3">Browse All Products</a>
+    </div>
+    {% endif %}
+</section>
+
+<!-- About Section Preview -->
+<section class="container mt-5">
+    <div class="row align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <h2>Welcome to CHARA</h2>
+            <p>At CHARA WARDROBES AND PERFUMES, we believe in the power of personal style. Our carefully selected collection of clothing and fragrances is designed to help you express your unique personality.</p>
+            <p>From casual wear to elegant outfits, and from subtle scents to bold fragrances, we have something for every taste and occasion.</p>
+            <a href="{{ url_for('about') }}" class="btn btn-order">Learn More About Us</a>
+        </div>
+        <div class="col-lg-6">
+            <div class="ratio ratio-16x9">
+                <div class="bg-light d-flex align-items-center justify-content-center rounded" style="background-color: var(--light-color);">
+                    <div class="text-center p-4">
+                        <i class="fas fa-store fa-4x mb-3" style="color: var(--primary-color);"></i>
+                        <h4>Elegance & Quality</h4>
+                        <p>Our commitment to providing the finest products at reasonable prices</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Guides Section Preview -->
+<section class="container mt-5 mb-5">
+    <h2 class="section-title">Style & Fragrance Guides</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-tshirt fa-3x mb-3" style="color: var(--primary-color);"></i>
+                    <h3 class="h5">Finding Your Perfect Size</h3>
+                    <p>Learn how to measure yourself correctly to find clothing that fits perfectly every time.</p>
+                    <a href="{{ url_for('learn') }}#sizing" class="btn btn-sm btn-order">Read Guide</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-spray-can-sparkles fa-3x mb-3" style="color: var(--primary-color);"></i>
+                    <h3 class="h5">Perfume Selection Tips</h3>
+                    <p>Discover how to choose the perfect fragrance based on your personality and occasion.</p>
+                    <a href="{{ url_for('learn') }}#perfume" class="btn btn-sm btn-order">Read Guide</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-hand-sparkles fa-3x mb-3" style="color: var(--primary-color);"></i>
+                    <h3 class="h5">Clothing Care Guide</h3>
+                    <p>Learn how to properly care for your clothes to make them last longer and look better.</p>
+                    <a href="{{ url_for('learn') }}#care" class="btn btn-sm btn-order">Read Guide</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

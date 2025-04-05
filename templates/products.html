@@ -1,0 +1,79 @@
+{% extends 'layout.html' %}
+
+{% block title %}CHARA WARDROBES AND PERFUMES - Products{% endblock %}
+
+{% block content %}
+<section class="container mt-5">
+    <h1 class="section-title">Our Collections</h1>
+    
+    <!-- Search Bar -->
+    <div class="search-container">
+        <form id="searchForm" class="search-form" method="GET" action="{{ url_for('products') }}">
+            <input type="text" id="searchInput" name="search" class="search-input" placeholder="Search by name, type, color, or size..." value="{{ search_query }}">
+            <button type="submit" class="search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+    </div>
+    
+    {% if search_query %}
+    <div class="mb-4">
+        <h4>Search results for: "{{ search_query }}"</h4>
+        <a href="{{ url_for('products') }}" class="btn btn-sm btn-outline-secondary">Clear Search</a>
+    </div>
+    {% endif %}
+    
+    {% if products %}
+    <div class="row">
+        {% for product in products %}
+        {% if product.type or product.price %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="product-card">
+                <div class="product-img-container">
+                    <img src="{{ product.image_path }}" alt="{{ product.name }}" class="product-img">
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">{{ product.name }}</h3>
+                    {% if product.type %}
+                    <div class="product-type">{{ product.type }}</div>
+                    {% endif %}
+                    <div class="product-meta">
+                        {% if product.color %}
+                        <span class="product-color me-3"><i class="fas fa-palette me-1"></i> {{ product.color }}</span>
+                        {% endif %}
+                        {% if product.size %}
+                        <span class="product-size"><i class="fas fa-ruler me-1"></i> {{ product.size }}</span>
+                        {% endif %}
+                    </div>
+                    {% if product.price %}
+                    <div class="product-price">{{ product.price }} KES</div>
+                    {% endif %}
+                    <a href="https://wa.me/254702533122?text=Hello%2C%20I%20would%20like%20to%20order%20or%20discuss%20{{ product.name }}" 
+                       class="btn btn-order w-100" 
+                       target="_blank" 
+                       data-product-name="{{ product.name }}">
+                        <i class="fab fa-whatsapp"></i> Order via WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    
+    {% if products|selectattr('type')|list|length == 0 %}
+    <div class="empty-product-msg">
+        <p>No products with complete information available at this time. Please check back later!</p>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="empty-product-msg">
+        <p>No products found matching your search criteria.</p>
+        {% if search_query %}
+        <a href="{{ url_for('products') }}" class="btn btn-order mt-3">View All Products</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
