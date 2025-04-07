@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize product image modal
+    initProductImageModal();
+
     // Apply saved font size setting on page load
     applyFontSizeSetting();
     
@@ -10,6 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize logo selection buttons
     initLogoSelectionButtons();
+    
+    // Initialize product image modal
+    initProductImageModal();
     
     // Initialize the search functionality
     const searchForm = document.getElementById('searchForm');
@@ -221,5 +227,119 @@ function applyLogo(logoNumber) {
         }
         
         logoImg.src = logoSrc;
+    }
+}
+
+// Product image modal functionality
+function initProductImageModal() {
+    // Add modal to the page if it doesn't exist
+    if (!document.getElementById('productImageModal')) {
+        const modal = document.createElement('div');
+        modal.id = 'productImageModal';
+        modal.className = 'product-modal';
+        modal.innerHTML = `
+            <span class="modal-close">&times;</span>
+            <img class="modal-content" id="modalProductImage">
+            <div class="modal-product-info">
+                <div class="modal-product-title" id="modalProductTitle"></div>
+                <div class="modal-product-details" id="modalProductDetails"></div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    const modal = document.getElementById('productImageModal');
+    const modalImg = document.getElementById('modalProductImage');
+    const modalTitle = document.getElementById('modalProductTitle');
+    const modalDetails = document.getElementById('modalProductDetails');
+    const closeBtn = document.querySelector('.modal-close');
+
+    // Get all product image containers
+    const productImgContainers = document.querySelectorAll('.product-img-container');
+    
+    productImgContainers.forEach(container => {
+        container.addEventListener('click', function(e) {
+            // Prevent click if this was a button or link click inside the container
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
+                return;
+            }
+            
+            // Find the image and product details
+            const img = this.querySelector('.product-img');
+            if (!img) return;
+            
+            // Get the parent product card
+            const productCard = this.closest('.product-card');
+            if (!productCard) return;
+            
+            // Get product details from the product card
+            const productTitle = productCard.querySelector('.product-title');
+            const productType = productCard.querySelector('.product-type');
+            const productColor = productCard.querySelector('.product-color');
+            const productSize = productCard.querySelector('.product-size');
+            const productPrice = productCard.querySelector('.product-price');
+            
+            // Set modal content
+            modalImg.src = img.src;
+            
+            // Set product title
+            modalTitle.textContent = productTitle ? productTitle.textContent : '';
+            
+            // Clear previous details
+            modalDetails.innerHTML = '';
+            
+            // Add details if they exist
+            if (productType) {
+                const typeSpan = document.createElement('span');
+                typeSpan.innerHTML = `<strong>Type:</strong> ${productType.textContent}`;
+                modalDetails.appendChild(typeSpan);
+            }
+            
+            if (productColor) {
+                const colorSpan = document.createElement('span');
+                colorSpan.innerHTML = productColor.innerHTML;
+                modalDetails.appendChild(colorSpan);
+            }
+            
+            if (productSize) {
+                const sizeSpan = document.createElement('span');
+                sizeSpan.innerHTML = productSize.innerHTML;
+                modalDetails.appendChild(sizeSpan);
+            }
+            
+            if (productPrice) {
+                const priceSpan = document.createElement('span');
+                priceSpan.innerHTML = `<strong>Price:</strong> ${productPrice.textContent}`;
+                modalDetails.appendChild(priceSpan);
+            }
+            
+            // Display the modal
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling while modal is open
+        });
+    });
+    
+    // Close modal when clicking the close button
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
+    }
+    
+    // Close modal when clicking outside the image
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+    
+    // Close modal when pressing ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.style.display === 'flex') {
+            closeModal();
+        }
+    });
+    
+    function closeModal() {
+        modal.style.display = 'none';
+        document.body.style.overflow = ''; // Re-enable scrolling
     }
 }
