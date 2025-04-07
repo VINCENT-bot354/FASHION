@@ -354,14 +354,6 @@ def update_product():
         message = 'An error occurred while updating the product'
         flash(message, 'danger')
     
-    # Return JSON response for AJAX requests
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return {
-            'success': success, 
-            'message': message,
-            'image_path': image_path
-        }
-    
     return redirect(url_for('admin'))
 
 @app.route('/admin/add_product', methods=['POST'])
@@ -460,8 +452,6 @@ def upload_image(product_name):
     if 'image' not in request.files:
         message = 'No file part'
         flash(message, 'danger')
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return {'success': success, 'message': message}
         return redirect(url_for('admin'))
     
     file = request.files['image']
@@ -469,8 +459,6 @@ def upload_image(product_name):
     if file.filename == '':
         message = 'No selected file'
         flash(message, 'danger')
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return {'success': success, 'message': message}
         return redirect(url_for('admin'))
     
     if file and allowed_file(file.filename):
@@ -509,13 +497,6 @@ def upload_image(product_name):
         message = 'Invalid file type. Only jpg, jpeg, png, and gif are allowed'
         flash(message, 'danger')
     
-    # Return JSON response for AJAX requests
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return {
-            'success': success, 
-            'message': message,
-            'image_path': image_path
-        }
     
     return redirect(url_for('admin'))
 
