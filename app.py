@@ -282,7 +282,7 @@ def admin():
 @app.route('/admin/update_product', methods=['POST'])
 @login_required
 def update_product():
-    """Update product details"""
+    """Update product details and image if provided"""
     product_name = request.form.get('name')
     product_type = request.form.get('type')
     product_color = request.form.get('color')
@@ -292,20 +292,58 @@ def update_product():
     
     success = False
     message = ""
+    image_path = ""
     
     try:
         product = Product.query.filter_by(name=product_name).first()
         
         if product:
+            # Update basic product information
             product.category = product_type
             product.color = product_color
             product.size = product_size
             product.price = float(product_price) if product_price else 0
             product.featured = product_featured
             
+            # Handle image upload if provided
+            if 'image' in request.files:
+                file = request.files['image']
+                if file and file.filename != '':
+                    if allowed_file(file.filename):
+                        try:
+                            # Get file extension
+                            ext = file.filename.rsplit('.', 1)[1].lower()
+                            
+                            # Create filename based on product name
+                            filename = f"{product_name.lower()}.{ext}"
+                            
+                            # Remove any existing images for this product
+                            for old_ext in ALLOWED_EXTENSIONS:
+                                old_file = os.path.join(app.config['UPLOAD_FOLDER'], f"{product_name.lower()}.{old_ext}")
+                                if os.path.exists(old_file):
+                                    os.remove(old_file)
+                            
+                            # Save the new image
+                            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                            
+                            # Update the product's image path
+                            image_path = f"/static/images/products/{filename}"
+                            product.image_path = image_path
+                            
+                            message = 'Product and image updated successfully'
+                        except Exception as e:
+                            logger.error(f"Error uploading image: {e}")
+                            message = 'Product updated but image upload failed'
+                    else:
+                        message = 'Product updated but image has invalid type (only jpg, jpeg, png, and gif allowed)'
+                else:
+                    message = 'Product updated successfully'
+            else:
+                message = 'Product updated successfully'
+                
+            # Commit changes to database
             db.session.commit()
             success = True
-            message = 'Product updated successfully'
             flash(message, 'success')
         else:
             message = 'Product not found'
@@ -313,14 +351,15 @@ def update_product():
     except Exception as e:
         logger.error(f"Error updating product: {e}")
         db.session.rollback()
-        message = 'Failed to update product'
+        message = 'An error occurred while updating the product'
         flash(message, 'danger')
     
-    # Check if request wants a JSON response (AJAX)
+    # Return JSON response for AJAX requests
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return {
             'success': success, 
-            'message': message
+            'message': message,
+            'image_path': image_path
         }
     
     return redirect(url_for('admin'))
@@ -328,7 +367,7 @@ def update_product():
 @app.route('/admin/add_product', methods=['POST'])
 @login_required
 def add_product():
-    """Add a new product"""
+    """Add a new product with image if provided"""
     product_name = request.form.get('name')
     
     if not product_name:
@@ -355,6 +394,32 @@ def add_product():
         )
         
         db.session.add(new_product)
+        
+        # Handle image upload if provided
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename != '':
+                if allowed_file(file.filename):
+                    try:
+                        # Get file extension
+                        ext = file.filename.rsplit('.', 1)[1].lower()
+                        
+                        # Create filename based on product name
+                        filename = f"{product_name.lower()}.{ext}"
+                        
+                        # Save the new image
+                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                        
+                        # Update the product's image path
+                        image_path = f"/static/images/products/{filename}"
+                        new_product.image_path = image_path
+                        
+                    except Exception as e:
+                        logger.error(f"Error uploading image: {e}")
+                        flash('Product added but image upload failed', 'warning')
+                else:
+                    flash('Product added but image has invalid type (only jpg, jpeg, png, and gif allowed)', 'warning')
+        
         db.session.commit()
         flash('Product added successfully', 'success')
     except Exception as e:

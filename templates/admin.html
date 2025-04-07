@@ -35,12 +35,17 @@
                         <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="{{ url_for('add_product') }}" method="POST">
+                    <form action="{{ url_for('add_product') }}" method="POST" enctype="multipart/form-data">
                         <div class="modal-body">
-                            <div class="admin-form-group">
+                            <div class="admin-form-group mb-3">
                                 <label for="productName" class="admin-form-label">Product Name*</label>
                                 <input type="text" class="admin-form-control" id="productName" name="name" required>
                                 <small class="text-muted">This will be used to match with product images.</small>
+                            </div>
+                            <div class="admin-form-group mb-3">
+                                <label for="productImage" class="admin-form-label">Product Image</label>
+                                <input type="file" class="admin-form-control" id="productImage" name="image" accept=".jpg,.jpeg,.png,.gif">
+                                <small class="text-muted">Image will be named after the product.</small>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -96,8 +101,7 @@
                     <tr id="product-form-{{ loop.index }}" class="d-none">
                         <td colspan="8">
                             <div class="ajax-status-message alert d-none mb-3"></div>
-                            
-                            <form id="product-update-form-{{ loop.index }}" class="row g-3 ajax-form" action="{{ url_for('update_product') }}" method="POST" data-product-id="{{ loop.index }}">
+                            <form id="product-update-form-{{ loop.index }}" class="row g-3 ajax-form" action="{{ url_for('update_product') }}" method="POST" enctype="multipart/form-data" data-product-id="{{ loop.index }}">
                                 <input type="hidden" name="name" value="{{ product.name }}">
                                 
                                 <div class="col-md-6">
@@ -134,31 +138,24 @@
                                     </div>
                                 </div>
                                 
+                                <div class="col-md-6">
+                                    <label class="form-label">Product Image (jpg, jpeg, png, gif)</label>
+                                    <input type="file" class="form-control product-image-input" name="image" accept=".jpg,.jpeg,.png,.gif" data-preview="image-preview-{{ loop.index }}">
+                                    <small class="text-muted">Image will be named after the product</small>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Image Preview</label>
+                                    <div class="mt-2">
+                                        <img id="image-preview-{{ loop.index }}" src="{{ product.image_path if product.image_path else '#' }}" alt="Preview" style="{{ 'max-height: 100px; max-width: 100%;' if product.image_path else 'display: none; max-height: 100px; max-width: 100%;' }}">
+                                    </div>
+                                </div>
+                                
                                 <div class="col-12 mt-3">
-                                    <button type="submit" class="btn admin-btn me-2">Save Changes</button>
+                                    <button type="submit" class="btn admin-btn me-2">Save Product</button>
                                     <button type="button" class="btn btn-secondary cancel-edit-btn" data-product-id="{{ loop.index }}">Cancel</button>
                                 </div>
                             </form>
-                            
-                            <div class="mt-4">
-                                <h5>Upload Product Image</h5>
-                                <div class="ajax-status-message alert d-none mb-3"></div>
-                                <form id="image-upload-form-{{ loop.index }}" class="ajax-image-form mt-2" action="{{ url_for('upload_image', product_name=product.name) }}" method="POST" enctype="multipart/form-data" data-product-id="{{ loop.index }}">
-                                    <div class="row g-3 align-items-end">
-                                        <div class="col-md-6">
-                                            <label class="form-label">Image File (jpg, jpeg, png, gif)</label>
-                                            <input type="file" class="form-control product-image-input" name="image" accept=".jpg,.jpeg,.png,.gif" data-preview="image-preview-{{ loop.index }}">
-                                            <small class="text-muted">Image will be automatically named "{{ product.name | lower }}.jpg" (or other extension)</small>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <img id="image-preview-{{ loop.index }}" src="#" alt="Preview" style="display: none; max-height: 100px; max-width: 100%;">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button type="submit" class="btn admin-btn w-100">Upload Image</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -167,4 +164,8 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 {% endblock %}
