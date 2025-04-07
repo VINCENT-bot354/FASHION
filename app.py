@@ -175,18 +175,19 @@ def save_products(products):
 def index():
     """Home page with featured products"""
     products = get_products()
-    featured_products = [p for p in products if p.get('featured', False) and p.get('type') and p.get('price')]
+    featured_products = [p for p in products if p.get('featured') is True and p.get('category') and p.get('price')]
     
     # If no products are marked as featured, use the first 6 completed products
     if not featured_products:
-        featured_products = [p for p in products if p.get('type') and p.get('price')][:6]
+        featured_products = [p for p in products if p.get('category') and p.get('price')][:6]
     
     # Get at most 6 featured products
     featured_products = featured_products[:6]
     
-    # Add image paths
+    # Add image paths for products without one
     for product in featured_products:
-        product['image_path'] = get_product_image_path(product['name'])
+        if not product.get('image_path'):
+            product['image_path'] = get_product_image_path(product['name'])
     
     return render_template('index.html', featured_products=featured_products)
 
@@ -209,8 +210,8 @@ def products():
         category_products = []
         
         for product in all_products:
-            product_type = product.get('type', '').lower()
-            if any(keyword in product_type for keyword in category_keywords):
+            product_category = product.get('category', '').lower()
+            if any(keyword in product_category for keyword in category_keywords):
                 category_products.append(product)
         
         all_products = category_products
@@ -221,7 +222,7 @@ def products():
         for product in all_products:
             # Only include products that have at least a name and match the search query
             if (product.get('name', '').lower().find(search_query) != -1 or
-                product.get('type', '').lower().find(search_query) != -1 or
+                product.get('category', '').lower().find(search_query) != -1 or
                 product.get('color', '').lower().find(search_query) != -1 or
                 product.get('size', '').lower().find(search_query) != -1):
                 filtered_products.append(product)
