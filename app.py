@@ -6,6 +6,7 @@ from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+from models import db, Product, AdminUser
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -13,6 +14,17 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
+
+# Configure the database
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_recycle": 300,
+    "pool_pre_ping": True,
+}
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+# Initialize the database with the app
+db.init_app(app)
 
 # Function to get image path for products
 def check_image_exists(product_name):
@@ -39,7 +51,6 @@ def inject_context():
     }
 
 # Constants
-PRODUCTS_FILE = 'products.json'
 UPLOAD_FOLDER = 'static/images/products/'
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
 ADMIN_USERNAME = 'admin'
@@ -50,6 +61,15 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Configure app
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Initialize database tables and default admin user
+with app.app_context():
+    db.create_all()
+    # Create default admin if not exists
+    if not AdminUser.query.filter_by(username='admin').first():
+        admin = AdminUser(username='admin', password_hash=ADMIN_PASSWORD)
+        db.session.add(admin)
+        db.session.commit()
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -63,12 +83,13 @@ def login_required(f):
     return decorated_function
 
 def get_products():
-    """Load products from the JSON file"""
+    """Load products from the database"""
     try:
-        if os.path.exists(PRODUCTS_FILE):
-            with open(PRODUCTS_FILE, 'r') as f:
-                return json.load(f)
-        else:
+        # Get all products from database
+        products = Product.query.all()
+        
+        # If no products, initialize with default names
+        if not products:
             # Create initial product list with the first 100 products
             product_names = ["Mara", "Willow", "Sahara", "Venus", "Amethysta", "Tanganyika", "Luma", "Topaz", 
                             "Mombasa", "Alpsa", "Magnolia", "Eartha", "Emberlyn", "Tana", "Skyra", "Onyx", 
@@ -84,30 +105,66 @@ def get_products():
                             "Terra", "Olympia", "Citrine", "Serena", "Aria", "Sahel", "Savannah", "Maya", 
                             "Lotus", "Amazon", "Calla", "Crimson", "Sierra", "Nova"]
             
-            products = []
+            # Add products to database
             for name in product_names:
-                products.append({
-                    "name": name,
-                    "type": "",
-                    "color": "",
-                    "size": "",
-                    "price": "",
-                    "featured": False
-                })
-                
-            with open(PRODUCTS_FILE, 'w') as f:
-                json.dump(products, f, indent=4)
-                
-            return products
+                product = Product(
+                    name=name,
+                    price=0.0,
+                    description="",
+                    category="",
+                    color="",
+                    size="",
+                    featured=False
+                )
+                db.session.add(product)
+            
+            db.session.commit()
+            products = Product.query.all()
+        
+        # Convert to dict format for compatibility with existing code
+        return [product.to_dict() for product in products]
     except Exception as e:
         logger.error(f"Error loading products: {e}")
         return []
 
-def save_products(products):
-    """Save products to the JSON file"""
+def save_product(product_data):
+    """Save a single product to the database"""
     try:
-        with open(PRODUCTS_FILE, 'w') as f:
-            json.dump(products, f, indent=4)
+        product = Product.query.filter_by(name=product_data['name']).first()
+        
+        if product:
+            # Update existing product
+            product.price = float(product_data.get('price', 0))
+            product.description = product_data.get('description', '')
+            product.category = product_data.get('type', '')  # Use 'type' as category for now
+            product.color = product_data.get('color', '')
+            product.size = product_data.get('size', '')
+            product.featured = product_data.get('featured', False)
+        else:
+            # Create new product
+            product = Product(
+                name=product_data['name'],
+                price=float(product_data.get('price', 0)),
+                description=product_data.get('description', ''),
+                category=product_data.get('type', ''),  # Use 'type' as category for now
+                color=product_data.get('color', ''),
+                size=product_data.get('size', ''),
+                featured=product_data.get('featured', False)
+            )
+            db.session.add(product)
+        
+        db.session.commit()
+        return True
+    except Exception as e:
+        logger.error(f"Error saving product: {e}")
+        db.session.rollback()
+        return False
+
+def save_products(products):
+    """Save all products to the database"""
+    try:
+        for product_data in products:
+            save_product(product_data)
         return True
     except Exception as e:
         logger.error(f"Error saving products: {e}")
@@ -199,7 +256,9 @@ def admin_login():
         username = request.form.get('username')
         password = request.form.get('password')
         
-        if username == ADMIN_USERNAME and check_password_hash(ADMIN_PASSWORD, password):
+        admin = AdminUser.query.filter_by(username=username).first()
+        
+        if admin and check_password_hash(admin.password_hash, password):
             session['admin_logged_in'] = True
             return redirect(url_for('admin'))
         else:
@@ -231,21 +290,23 @@ def update_product():
     product_price = request.form.get('price')
     product_featured = 'featured' in request.form
     
-    products = get_products()
-    
-    # Find and update the product
-    for product in products:
-        if product['name'] == product_name:
-            product['type'] = product_type
-            product['color'] = product_color
-            product['size'] = product_size
-            product['price'] = product_price
-            product['featured'] = product_featured
-            break
-    
-    if save_products(products):
-        flash('Product updated successfully', 'success')
-    else:
+    try:
+        product = Product.query.filter_by(name=product_name).first()
+        
+        if product:
+            product.category = product_type
+            product.color = product_color
+            product.size = product_size
+            product.price = float(product_price) if product_price else 0
+            product.featured = product_featured
+            
+            db.session.commit()
+            flash('Product updated successfully', 'success')
+        else:
+            flash('Product not found', 'danger')
+    except Exception as e:
+        logger.error(f"Error updating product: {e}")
+        db.session.rollback()
         flash('Failed to update product', 'danger')
     
     return redirect(url_for('admin'))
@@ -260,29 +321,31 @@ def add_product():
         flash('Product name is required', 'danger')
         return redirect(url_for('admin'))
     
-    products = get_products()
-    
-    # Check if product already exists
-    for product in products:
-        if product['name'].lower() == product_name.lower():
+    try:
+        # Check if product already exists
+        existing_product = Product.query.filter_by(name=product_name).first()
+        
+        if existing_product:
             flash('Product with this name already exists', 'danger')
             return redirect(url_for('admin'))
-    
-    # Add new product
-    new_product = {
-        "name": product_name,
-        "type": "",
-        "color": "",
-        "size": "",
-        "price": "",
-        "featured": False
-    }
-    
-    products.append(new_product)
-    
-    if save_products(products):
+        
+        # Add new product
+        new_product = Product(
+            name=product_name,
+            price=0.0,
+            description="",
+            category="",
+            color="",
+            size="",
+            featured=False
+        )
+        
+        db.session.add(new_product)
+        db.session.commit()
         flash('Product added successfully', 'success')
-    else:
+    except Exception as e:
+        logger.error(f"Error adding product: {e}")
+        db.session.rollback()
         flash('Failed to add product', 'danger')
     
     return redirect(url_for('admin'))
@@ -291,14 +354,18 @@ def add_product():
 @login_required
 def delete_product(product_name):
     """Delete a product"""
-    products = get_products()
-    
-    # Remove product
-    products = [p for p in products if p['name'] != product_name]
-    
-    if save_products(products):
-        flash('Product deleted successfully', 'success')
-    else:
+    try:
+        product = Product.query.filter_by(name=product_name).first()
+        
+        if product:
+            db.session.delete(product)
+            db.session.commit()
+            flash('Product deleted successfully', 'success')
+        else:
+            flash('Product not found', 'danger')
+    except Exception as e:
+        logger.error(f"Error deleting product: {e}")
+        db.session.rollback()
         flash('Failed to delete product', 'danger')
     
     return redirect(url_for('admin'))
@@ -318,21 +385,33 @@ def upload_image(product_name):
         return redirect(url_for('admin'))
     
     if file and allowed_file(file.filename):
-        # Get file extension
-        ext = file.filename.rsplit('.', 1)[1].lower()
-        
-        # Create filename based on product name
-        filename = f"{product_name.lower()}.{ext}"
-        
-        # Remove any existing images for this product
-        for old_ext in ALLOWED_EXTENSIONS:
-            old_file = os.path.join(app.config['UPLOAD_FOLDER'], f"{product_name.lower()}.{old_ext}")
-            if os.path.exists(old_file):
-                os.remove(old_file)
-        
-        # Save the new image
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        flash('Image uploaded successfully', 'success')
+        try:
+            # Get file extension
+            ext = file.filename.rsplit('.', 1)[1].lower()
+            
+            # Create filename based on product name
+            filename = f"{product_name.lower()}.{ext}"
+            
+            # Remove any existing images for this product
+            for old_ext in ALLOWED_EXTENSIONS:
+                old_file = os.path.join(app.config['UPLOAD_FOLDER'], f"{product_name.lower()}.{old_ext}")
+                if os.path.exists(old_file):
+                    os.remove(old_file)
+            
+            # Save the new image
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            
+            # Update the product's image path in the database
+            product = Product.query.filter_by(name=product_name).first()
+            if product:
+                product.image_path = f"/static/images/products/{filename}"
+                db.session.commit()
+                
+            flash('Image uploaded successfully', 'success')
+        except Exception as e:
+            logger.error(f"Error uploading image: {e}")
+            db.session.rollback()
+            flash('Failed to upload image', 'danger')
     else:
         flash('Invalid file type. Only jpg, jpeg, png, and gif are allowed', 'danger')
     
