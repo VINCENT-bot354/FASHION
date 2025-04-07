@@ -290,6 +290,9 @@ def update_product():
     product_price = request.form.get('price')
     product_featured = 'featured' in request.form
     
+    success = False
+    message = ""
+    
     try:
         product = Product.query.filter_by(name=product_name).first()
         
@@ -301,13 +304,24 @@ def update_product():
             product.featured = product_featured
             
             db.session.commit()
-            flash('Product updated successfully', 'success')
+            success = True
+            message = 'Product updated successfully'
+            flash(message, 'success')
         else:
-            flash('Product not found', 'danger')
+            message = 'Product not found'
+            flash(message, 'danger')
     except Exception as e:
         logger.error(f"Error updating product: {e}")
         db.session.rollback()
-        flash('Failed to update product', 'danger')
+        message = 'Failed to update product'
+        flash(message, 'danger')
+    
+    # Check if request wants a JSON response (AJAX)
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return {
+            'success': success, 
+            'message': message
+        }
     
     return redirect(url_for('admin'))
 
@@ -374,14 +388,24 @@ def delete_product(product_name):
 @login_required
 def upload_image(product_name):
     """Upload an image for a product"""
+    success = False
+    message = ""
+    image_path = ""
+    
     if 'image' not in request.files:
-        flash('No file part', 'danger')
+        message = 'No file part'
+        flash(message, 'danger')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return {'success': success, 'message': message}
         return redirect(url_for('admin'))
     
     file = request.files['image']
     
     if file.filename == '':
-        flash('No selected file', 'danger')
+        message = 'No selected file'
+        flash(message, 'danger')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return {'success': success, 'message': message}
         return redirect(url_for('admin'))
     
     if file and allowed_file(file.filename):
@@ -404,16 +428,29 @@ def upload_image(product_name):
             # Update the product's image path in the database
             product = Product.query.filter_by(name=product_name).first()
             if product:
-                product.image_path = f"/static/images/products/{filename}"
+                image_path = f"/static/images/products/{filename}"
+                product.image_path = image_path
                 db.session.commit()
-                
-            flash('Image uploaded successfully', 'success')
+            
+            success = True
+            message = 'Image uploaded successfully'
+            flash(message, 'success')
         except Exception as e:
             logger.error(f"Error uploading image: {e}")
             db.session.rollback()
-            flash('Failed to upload image', 'danger')
+            message = 'Failed to upload image'
+            flash(message, 'danger')
     else:
-        flash('Invalid file type. Only jpg, jpeg, png, and gif are allowed', 'danger')
+        message = 'Invalid file type. Only jpg, jpeg, png, and gif are allowed'
+        flash(message, 'danger')
+    
+    # Return JSON response for AJAX requests
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return {
+            'success': success, 
+            'message': message,
+            'image_path': image_path
+        }
     
     return redirect(url_for('admin'))
 

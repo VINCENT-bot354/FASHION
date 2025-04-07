@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize admin AJAX forms
+    initAdminAjaxForms();
+
     // Initialize product image modal
     initProductImageModal();
 
@@ -342,4 +345,135 @@ function initProductImageModal() {
         modal.style.display = 'none';
         document.body.style.overflow = ''; // Re-enable scrolling
     }
+}
+
+// Admin panel AJAX form submissions
+function initAdminAjaxForms() {
+    // Product update form AJAX submission
+    const productForms = document.querySelectorAll('.ajax-form');
+    productForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const productId = this.getAttribute('data-product-id');
+            const statusMessage = this.closest('td').querySelector('.ajax-status-message');
+            
+            // Clear previous status messages
+            statusMessage.textContent = '';
+            statusMessage.className = 'alert mb-3';
+            statusMessage.classList.add('d-block');
+            statusMessage.textContent = 'Saving changes...';
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                statusMessage.textContent = data.message;
+                
+                if (data.success) {
+                    statusMessage.classList.add('alert-success');
+                    
+                    // Update the product row with new data
+                    setTimeout(() => {
+                        const productRow = document.getElementById(`product-row-${productId}`);
+                        if (productRow) {
+                            // Update the product row cells with new data
+                            const cells = productRow.querySelectorAll('td');
+                            if (cells.length >= 6) {
+                                cells[1].textContent = formData.get('type') || ''; // Type
+                                cells[2].textContent = formData.get('color') || ''; // Color
+                                cells[3].textContent = formData.get('size') || ''; // Size
+                                cells[4].textContent = formData.get('price') || ''; // Price
+                                cells[5].textContent = formData.has('featured') ? 'Yes' : 'No'; // Featured
+                            }
+                        }
+                    }, 1000);
+                } else {
+                    statusMessage.classList.add('alert-danger');
+                }
+                
+                // Auto-hide the message after 5 seconds
+                setTimeout(() => {
+                    statusMessage.classList.add('fade');
+                    setTimeout(() => {
+                        statusMessage.classList.remove('fade');
+                        statusMessage.classList.add('d-none');
+                    }, 500);
+                }, 5000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                statusMessage.textContent = 'An error occurred while saving changes.';
+                statusMessage.classList.add('alert-danger');
+            });
+        });
+    });
+    
+    // Image upload form AJAX submission
+    const imageForms = document.querySelectorAll('.ajax-image-form');
+    imageForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const productId = this.getAttribute('data-product-id');
+            const statusMessage = this.closest('td').querySelector('.ajax-status-message');
+            
+            // Clear previous status messages
+            statusMessage.textContent = '';
+            statusMessage.className = 'alert mb-3';
+            statusMessage.classList.add('d-block');
+            statusMessage.textContent = 'Uploading image...';
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                statusMessage.textContent = data.message;
+                
+                if (data.success) {
+                    statusMessage.classList.add('alert-success');
+                    
+                    // Update the image badge in the product row
+                    setTimeout(() => {
+                        const productRow = document.getElementById(`product-row-${productId}`);
+                        if (productRow) {
+                            const cells = productRow.querySelectorAll('td');
+                            if (cells.length >= 7) {
+                                const imageCell = cells[6]; // Image cell
+                                imageCell.innerHTML = '<span class="badge bg-success">Uploaded</span>';
+                            }
+                        }
+                    }, 1000);
+                } else {
+                    statusMessage.classList.add('alert-danger');
+                }
+                
+                // Auto-hide the message after 5 seconds
+                setTimeout(() => {
+                    statusMessage.classList.add('fade');
+                    setTimeout(() => {
+                        statusMessage.classList.remove('fade');
+                        statusMessage.classList.add('d-none');
+                    }, 500);
+                }, 5000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                statusMessage.textContent = 'An error occurred while uploading the image.';
+                statusMessage.classList.add('alert-danger');
+            });
+        });
+    });
 }

@@ -95,7 +95,9 @@
                     </tr>
                     <tr id="product-form-{{ loop.index }}" class="d-none">
                         <td colspan="8">
-                            <form class="row g-3" action="{{ url_for('update_product') }}" method="POST">
+                            <div class="ajax-status-message alert d-none mb-3"></div>
+                            
+                            <form id="product-update-form-{{ loop.index }}" class="row g-3 ajax-form" action="{{ url_for('update_product') }}" method="POST" data-product-id="{{ loop.index }}">
                                 <input type="hidden" name="name" value="{{ product.name }}">
                                 
                                 <div class="col-md-6">
@@ -140,7 +142,8 @@
                             
                             <div class="mt-4">
                                 <h5>Upload Product Image</h5>
-                                <form action="{{ url_for('upload_image', product_name=product.name) }}" method="POST" enctype="multipart/form-data" class="mt-2">
+                                <div class="ajax-status-message alert d-none mb-3"></div>
+                                <form id="image-upload-form-{{ loop.index }}" class="ajax-image-form mt-2" action="{{ url_for('upload_image', product_name=product.name) }}" method="POST" enctype="multipart/form-data" data-product-id="{{ loop.index }}">
                                     <div class="row g-3 align-items-end">
                                         <div class="col-md-6">
                                             <label class="form-label">Image File (jpg, jpeg, png, gif)</label>
