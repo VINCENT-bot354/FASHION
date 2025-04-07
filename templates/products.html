@@ -6,6 +6,21 @@
 <section class="container mt-5">
     <h1 class="section-title">Our Collections</h1>
     
+    <!-- Search Bar -->
+    <div class="search-container mb-4">
+        <form action="{{ url_for('products') }}" method="GET" class="search-form">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control form-control-lg" placeholder="Search for products..." value="{{ search_query }}">
+                {% if selected_category != 'all' %}
+                <input type="hidden" name="category" value="{{ selected_category }}">
+                {% endif %}
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+        </form>
+    </div>
+    
     <!-- Category Filter Tabs -->
     <div class="category-filter mb-4">
         <div class="row">
@@ -32,83 +47,65 @@
         </div>
     </div>
     
-    <!-- Search Bar -->
-    <div class="search-container">
-        <form id="searchForm" class="search-form" method="GET" action="{{ url_for('products') }}">
-            {% if selected_category and selected_category != 'all' %}
-            <input type="hidden" name="category" value="{{ selected_category }}">
-            {% endif %}
-            <input type="text" id="searchInput" name="search" class="search-input" placeholder="Search by name, type, color, or size..." value="{{ search_query }}">
-            <button type="submit" class="search-btn">
-                <i class="fas fa-search"></i>
-            </button>
-        </form>
-    </div>
-    
-    {% if search_query %}
-    <div class="mb-4">
-        <h4>Search results for: "{{ search_query }}"</h4>
-        <a href="{{ url_for('products', category=selected_category) }}" class="btn btn-sm btn-outline-secondary">Clear Search</a>
-    </div>
-    {% endif %}
-    
-    {% if selected_category and selected_category != 'all' %}
-    <div class="mb-4">
-        <h5>Category: {{ selected_category|title }}</h5>
-    </div>
-    {% endif %}
-    
-    {% if products %}
-    <div class="row">
-        {% for product in products %}
-        {% if product.type or product.price %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="product-card">
-                <div class="product-img-container">
-                    <img src="{{ product.image_path }}" alt="{{ product.name }}" class="product-img">
-                </div>
-                <div class="product-details">
-                    <h3 class="product-title">{{ product.name }}</h3>
-                    {% if product.type %}
-                    <div class="product-type">{{ product.type }}</div>
-                    {% endif %}
-                    <div class="product-meta">
-                        {% if product.color %}
-                        <span class="product-color me-3"><i class="fas fa-palette me-1"></i> {{ product.color }}</span>
-                        {% endif %}
-                        {% if product.size %}
-                        <span class="product-size"><i class="fas fa-ruler me-1"></i> {{ product.size }}</span>
-                        {% endif %}
+    <!-- Products Display -->
+    <div class="products-container">
+        <div class="row">
+            {% if products %}
+                {% for product in products %}
+                    <div class="col-md-4 col-sm-6 mb-4">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="{{ product.image_path }}" alt="{{ product.name }}" class="img-fluid product-img" data-toggle="modal" data-target="#productImageModal" data-src="{{ product.image_path }}" data-name="{{ product.name }}">
+                            </div>
+                            <div class="product-details">
+                                <h3 class="product-name">{{ product.name }}</h3>
+                                <p class="product-meta">
+                                    {% if product.category %}
+                                        <span class="product-type">{{ product.category }}</span>
+                                    {% endif %}
+                                    {% if product.color %}
+                                        <span class="product-color">{{ product.color }}</span>
+                                    {% endif %}
+                                    {% if product.size %}
+                                        <span class="product-size">{{ product.size }}</span>
+                                    {% endif %}
+                                </p>
+                                {% if product.price %}
+                                    <p class="product-price">₦{{ product.price|int }}</p>
+                                {% else %}
+                                    <p class="product-price">Price on request</p>
+                                {% endif %}
+                                <a href="https://wa.me/+2348023456789?text=Hello%20CHARA%20FASHION%20AND%20FRAGRANCE,%20I'm%20interested%20in%20{{ product.name|urlencode }}%20product." class="btn btn-outline-primary btn-sm">
+                                    <i class="fab fa-whatsapp"></i> Order via WhatsApp
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                    {% if product.price %}
-                    <div class="product-price">{{ product.price }} KES</div>
-                    {% endif %}
-                    <a href="https://wa.me/254702533122?text=Hello%2C%20I%20would%20like%20to%20order%20or%20discuss%20{{ product.name }}" 
-                       class="btn btn-order w-100" 
-                       target="_blank" 
-                       data-product-name="{{ product.name }}">
-                        <i class="fab fa-whatsapp"></i> Order via WhatsApp
-                    </a>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <h3>No products found.</h3>
+                    <p>Try adjusting your search criteria.</p>
                 </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Product Image Modal -->
+<div class="modal fade" id="productImageModal" tabindex="-1" role="dialog" aria-labelledby="productImageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productImageModalLabel">Product Image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="" class="img-fluid modal-product-img" alt="Product Image">
             </div>
         </div>
-        {% endif %}
-        {% endfor %}
     </div>
-    
-    {% if products|selectattr('type')|list|length == 0 %}
-    <div class="empty-product-msg">
-        <p>No products with complete information available at this time. Please check back later!</p>
-    </div>
-    {% endif %}
-    
-    {% else %}
-    <div class="empty-product-msg">
-        <p>No products found matching your search criteria.</p>
-        {% if search_query %}
-        <a href="{{ url_for('products') }}" class="btn btn-order mt-3">View All Products</a>
-        {% endif %}
-    </div>
-    {% endif %}
-</section>
+</div>
 {% endblock %}

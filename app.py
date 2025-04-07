@@ -278,7 +278,20 @@ def admin_logout():
 def admin():
     """Admin panel to manage products"""
     products = get_products()
-    return render_template('admin.html', products=products)
+    admin_search_query = request.args.get('search', '').lower()
+    
+    if admin_search_query:
+        filtered_products = []
+        for product in products:
+            # Filter products by search query across multiple fields
+            if (admin_search_query in product.get('name', '').lower() or
+                admin_search_query in product.get('category', '').lower() or
+                admin_search_query in product.get('color', '').lower() or
+                admin_search_query in product.get('size', '').lower()):
+                filtered_products.append(product)
+        products = filtered_products
+    
+    return render_template('admin.html', products=products, admin_search_query=admin_search_query)
 
 @app.route('/admin/update_product', methods=['POST'])
 @login_required

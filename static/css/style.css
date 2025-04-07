@@ -393,7 +393,34 @@ h2, h3, h4 {
 .admin-actions {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+/* Admin Search Styling */
+.admin-search {
   margin-bottom: 2rem;
+}
+
+.admin-search .search-form {
+  max-width: 100%;
+  display: flex;
+}
+
+.admin-search .form-control {
+  border: 2px solid var(--primary-color);
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  flex-grow: 1;
+}
+
+.admin-search .btn {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  border-radius: 0 4px 4px 0;
+  padding: 0.6rem 1.2rem;
 }
 
 .admin-table {
@@ -951,4 +978,31 @@ footer {
 @keyframes zoom {
   from {transform: scale(0.8); opacity: 0;}
   to {transform: scale(1); opacity: 1;}
+}
+
+/* Admin Search Styling */
+.admin-search {
+  margin-bottom: 2rem;
+}
+
+.admin-search .search-form {
+  max-width: 100%;
+  display: flex;
+}
+
+.admin-search .form-control {
+  border: 2px solid var(--primary-color);
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  flex-grow: 1;
+}
+
+.admin-search .btn {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  border-radius: 0 4px 4px 0;
+  padding: 0.6rem 1.2rem;
 }
